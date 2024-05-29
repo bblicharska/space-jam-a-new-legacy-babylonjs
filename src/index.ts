@@ -12,9 +12,9 @@ import {
 } from "babylonjs";
 import * as cannon from "cannon";
 import { WoodProceduralTexture } from "babylonjs-procedural-textures";
+import {Environment} from "./environment"
 
 var canvas = document.getElementById("renderCanvas") as HTMLCanvasElement;
-
 // Load the 3D engine
 var engine: Engine = null;
 var sceneToRender = null;
@@ -43,15 +43,14 @@ var createScene = async function () {
   // Reduce the light intensity to 70%
   light.intensity = 0.7;
 
-  // Create the physics engine
-  var cannonPlugin = new CannonJSPlugin(true, 10, cannon);
+ // Create the physics engine
+ var cannonPlugin = new CannonJSPlugin(true, 10, cannon);
 
-  //enable physics and set gravity force.
-  scene.enablePhysics(new Vector3(0, -3, 0), cannonPlugin);
+ //enable physics and set gravity force.
+ scene.enablePhysics(new Vector3(0, -3, 0), cannonPlugin);
 
-  // Create the default environment
-  const env = scene.createDefaultEnvironment();
-
+ const environment = new Environment(scene, engine);
+  environment.init();
   // Create a floor in the scene and position it to the center
   var gymFloor = MeshBuilder.CreateGround("ground", { width: 60, height: 60 }, scene);
   gymFloor.position = new Vector3(0, -3.5, 0);
@@ -81,7 +80,7 @@ var createScene = async function () {
         size: 100
     },
     scene
-  );
+);
 
   // Create the default XR experience
   const xr = await scene.createDefaultXRExperienceAsync({
